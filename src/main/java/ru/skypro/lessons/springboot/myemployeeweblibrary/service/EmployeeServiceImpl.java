@@ -24,13 +24,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee getMinimumWageEmployee() {
-        Employee minWageEmployee = employeeRepository.getEmployeeList().stream().min(Comparator.comparingDouble(Employee::getSalary)).get();
+        Employee minWageEmployee = employeeRepository.getEmployeeList().stream().min(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
         return minWageEmployee;
     }
 
     @Override
     public Employee getMaxWageEmployee() {
-        Employee maxWageEmployee = employeeRepository.getEmployeeList().stream().max(Comparator.comparingDouble(Employee::getSalary)).get();
+        Employee maxWageEmployee = employeeRepository.getEmployeeList().stream().max(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
         return maxWageEmployee;
 
     }
