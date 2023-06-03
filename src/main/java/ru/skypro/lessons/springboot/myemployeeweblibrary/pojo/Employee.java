@@ -2,9 +2,9 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.pojo;
 
 public class Employee {
     private String name;
-    private int salary;
+    private double salary;
 
-    public Employee(String name, int salary) {
+    public Employee(String name, double salary) {
         this.name = name;
         this.salary = salary;
     }
@@ -13,7 +13,7 @@ public class Employee {
         return name;
     }
 
-    public int getSalary() {
+    public double getSalary() {
         return salary;
     }
 }

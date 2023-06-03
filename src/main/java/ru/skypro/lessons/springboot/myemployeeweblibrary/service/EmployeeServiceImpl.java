@@ -4,8 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepositoryImpl;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -15,8 +14,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public double getSumOfSalaries() {
         double sumOfSalary = 0;
-        for(int i = 0; i < employeeRepository.getEmployeeList().size(); i++)
-        {
+        for (int i = 0; i < employeeRepository.getEmployeeList().size(); i++) {
             sumOfSalary += employeeRepository.getEmployeeList().get(i).getSalary();
         }
         return sumOfSalary;
@@ -37,8 +35,44 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployeesWithHighSalary() {
-        double averageSalary = (getSumOfSalaries()/employeeRepository.getEmployeeList().size());
-        List<Employee> allEmployeesWithHighSalary = employeeRepository.getEmployeeList().stream().filter(e -> e.getSalary()>averageSalary).toList();
+        double averageSalary = (getSumOfSalaries() / employeeRepository.getEmployeeList().size());
+        List<Employee> allEmployeesWithHighSalary = employeeRepository.getEmployeeList().stream().filter(e -> e.getSalary() > averageSalary).toList();
         return allEmployeesWithHighSalary;
     }
+
+
+
+
+
+    private static Integer employeeId = 0;
+    private static final Map<Integer, Employee> employees = new HashMap<>();
+
+    @Override
+    public void addEmployee(Employee employee) {
+        employeeRepository.addEmployee(employee);
+    }
+
+    @Override
+    public void editEmployee(int id, Employee employee) {
+        employeeRepository.editEmployee(id,employee);
+    }
+
+    @Override
+    public Employee getEmployee(int id) {
+        return employeeRepository.getEmployee(id);
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+        employeeRepository.deleteEmployee(id);
+    }
+
+    @Override
+    public List<Employee> getAllEmployeesWithSalaryHigherThan(double compareSalary) {
+        List<Employee> employeesList = new ArrayList<>(employees.values());
+        List<Employee> allEmployeesWithSalaryHigherThan = employeesList.stream().
+                filter(e -> e.getSalary() > compareSalary).toList();
+        return allEmployeesWithSalaryHigherThan;
+    }
 }
+
