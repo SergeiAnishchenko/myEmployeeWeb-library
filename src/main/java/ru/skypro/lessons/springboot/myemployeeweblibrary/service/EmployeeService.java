@@ -2,6 +2,7 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import java.util.List;
+import java.util.Set;
 
 public interface EmployeeService {
 
@@ -15,5 +16,5 @@ public interface EmployeeService {
     public void editEmployee(int id, Employee employee);
     public Employee getEmployee(int id);
     public void deleteEmployee(int id);
-    public List<Employee> getAllEmployeesWithSalaryHigherThan(double compareSalary);
+    public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary);
 }

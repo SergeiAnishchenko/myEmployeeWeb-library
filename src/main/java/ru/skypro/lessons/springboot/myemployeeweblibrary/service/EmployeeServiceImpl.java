@@ -2,6 +2,7 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
 import org.springframework.stereotype.Service;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepository;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepositoryImpl;
 
 import java.util.*;
@@ -41,12 +42,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-
-
-
-    private static Integer employeeId = 0;
-    private static final Map<Integer, Employee> employees = new HashMap<>();
-
     @Override
     public void addEmployee(Employee employee) {
         employeeRepository.addEmployee(employee);
@@ -54,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void editEmployee(int id, Employee employee) {
-        employeeRepository.editEmployee(id,employee);
+        employeeRepository.editEmployee(id, employee);
     }
 
     @Override
@@ -67,9 +62,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.deleteEmployee(id);
     }
 
+
     @Override
-    public List<Employee> getAllEmployeesWithSalaryHigherThan(double compareSalary) {
-        List<Employee> employeesList = new ArrayList<>(employees.values());
+    public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary) {
+        List<Employee> employeesList = new ArrayList<>(employeeRepository.getEmployees().values());
         List<Employee> allEmployeesWithSalaryHigherThan = employeesList.stream().
                 filter(e -> e.getSalary() > compareSalary).toList();
         return allEmployeesWithSalaryHigherThan;

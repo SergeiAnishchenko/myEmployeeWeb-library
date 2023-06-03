@@ -12,13 +12,15 @@ import java.util.Map;
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private static Integer employeeId = 0;
-    private static final Map<Integer, Employee> employees = new HashMap<>();
+    private Map<Integer, Employee> employees = new HashMap<>();
+
 
     private final List<Employee> employeeList = List.of(
             new Employee("Ира", 110_000),
             new Employee("Вася", 167_000),
             new Employee("Егор", 90_000),
             new Employee("Маша", 175_000));
+
 
     public List<Employee> getEmployeeList() {
         return employeeList;

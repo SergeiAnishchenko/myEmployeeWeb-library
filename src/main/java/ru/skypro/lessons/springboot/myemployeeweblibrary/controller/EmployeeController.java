@@ -6,6 +6,7 @@ import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.service.EmployeeService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/employee")
@@ -54,8 +55,8 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
     }
 
-    @GetMapping("/allEmployeesWithSalaryHigherThan")
-    public List<Employee> getAllEmployeesWithSalaryHigherThan(@RequestParam("compareSalary") double compareSalary) {
+    @GetMapping("allEmployeesWithSalaryHigherThan")
+    public List<Employee> getAllEmployeesWithSalaryHigherThan(@RequestParam("compareSalary") int compareSalary) {
         return employeeService.getAllEmployeesWithSalaryHigherThan(compareSalary);
     }
 
