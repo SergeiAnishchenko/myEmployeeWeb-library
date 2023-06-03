@@ -23,6 +23,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     public List<Employee> getEmployeeList() {
         return employeeList;
     }
+
     public Map<Integer, Employee> getEmployees() {
         return employees;
     }
@@ -45,7 +46,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Employee getEmployee(int id) {
-        return employees.get(employeeId);
+        return employees.get(id);
     }
 
     @Override
