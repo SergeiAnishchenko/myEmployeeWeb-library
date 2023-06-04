@@ -1,12 +1,13 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.service.EmployeeService;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/employee")
@@ -41,18 +42,33 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public void editEmployee(@PathVariable int id, @RequestBody Employee employee) {
-        employeeService.editEmployee(id, employee);
+    public ResponseEntity<?> editEmployee(@PathVariable int id, @RequestBody Employee employee) {
+        try {
+            employeeService.editEmployee(id, employee);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ID сотрудника.",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployee(@PathVariable int id) {
-        return employeeService.getEmployee(id);
+    public Object getEmployee(@PathVariable int id) {
+        try {
+            employeeService.getEmployee(id);
+            return employeeService.getEmployee(id);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ID сотрудника.",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable int id) {
-        employeeService.deleteEmployee(id);
+    public ResponseEntity<?> deleteEmployee(@PathVariable int id) {
+        try {
+            employeeService.deleteEmployee(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ID сотрудника.",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("allEmployeesWithSalaryHigherThan")

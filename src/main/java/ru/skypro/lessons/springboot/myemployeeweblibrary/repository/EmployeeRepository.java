@@ -7,9 +7,9 @@ public interface EmployeeRepository {
 
     void addEmployee(Employee employee);
 
-    void editEmployee(int id, Employee employee);
+    void editEmployee(int id, Employee employee) throws IllegalArgumentException;
 
-    Employee getEmployee(int id);
+    Employee getEmployee(int id) throws IllegalArgumentException;
 
-    void deleteEmployee(int id);
+    void deleteEmployee(int id) throws IllegalArgumentException;
 }

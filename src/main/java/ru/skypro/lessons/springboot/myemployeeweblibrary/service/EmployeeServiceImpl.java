@@ -48,25 +48,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void editEmployee(int id, Employee employee) {
+    public void editEmployee(int id, Employee employee) throws IllegalArgumentException {
         employeeRepository.editEmployee(id, employee);
     }
 
     @Override
-    public Employee getEmployee(int id) {
+    public Employee getEmployee(int id) throws IllegalArgumentException {
         return employeeRepository.getEmployee(id);
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public void deleteEmployee(int id) throws IllegalArgumentException {
         employeeRepository.deleteEmployee(id);
     }
 
 
     @Override
     public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary) {
-        List<Employee> employeesList = new ArrayList<>(employeeRepository.getEmployees().values());
-        List<Employee> allEmployeesWithSalaryHigherThan = employeesList.stream().
+        List<Employee> allEmployeesWithSalaryHigherThan = employeeRepository.getEmployees().values().stream().
                 filter(e -> e.getSalary() > compareSalary).toList();
         return allEmployeesWithSalaryHigherThan;
     }

@@ -14,5 +14,7 @@ GET http://localhost:8080/employee/high-salary
 GET http://localhost:8080/employee/2
 
 ### Получение всех сотрудников, зарплата которых выше установленного значения
-GET http://localhost:8080/employee/allEmployeesWithSalaryHigherThan?compareSalary=130000
+GET http://localhost:8080/employee/allEmployeesWithSalaryHigherThan?compareSalary=13000
 
+### Удаление сотрудника по его ID
+DELETE http://localhost:8080/employee/2

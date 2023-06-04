@@ -13,8 +13,8 @@ public interface EmployeeService {
 
 
     public void addEmployee(Employee employee);
-    public void editEmployee(int id, Employee employee);
-    public Employee getEmployee(int id);
-    public void deleteEmployee(int id);
+    public void editEmployee(int id, Employee employee) throws IllegalArgumentException;
+    public Employee getEmployee(int id) throws IllegalArgumentException;
+    public void deleteEmployee(int id) throws IllegalArgumentException;
     public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary);
 }
