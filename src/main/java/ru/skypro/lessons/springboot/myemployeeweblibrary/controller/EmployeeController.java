@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.service.EmployeeService;
 
 import java.util.List;
@@ -61,4 +63,30 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
+
+    @GetMapping("/WithHighestSalary")
+    public List<EmployeeDTO> getEmployeesWithHighestSalary() {
+
+        return employeeService.getEmployeesWithHighestSalary();
+    }
+
+
+    @GetMapping("/position")
+    public Object getAllEmployeesByPosition(@RequestParam("position") String position) {
+        try {
+            return employeeService.getAllEmployeesByPosition(position);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ввод должности.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{id}/fullInfo")
+    public EmployeeByIdFullInfo getEmployeeByIdFullInfo(@PathVariable Integer id) throws IncorrectEmployeeIdException {
+        return employeeService.getEmployeeByIdFullInfo(id);
+    }
+
+    @GetMapping("/page")
+    public List<EmployeeDTO> getEmployeeWithPaging(@RequestParam("page") int page) {
+        return employeeService.getEmployeesByPage(page);
+    }
 }
