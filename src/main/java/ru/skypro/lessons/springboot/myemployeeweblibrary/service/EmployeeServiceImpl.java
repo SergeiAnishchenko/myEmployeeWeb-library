@@ -1,73 +1,55 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
 import org.springframework.stereotype.Service;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepository;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepositoryImpl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRepositoryImpl employeeRepository = new EmployeeRepositoryImpl();
-
-    @Override
-    public double getSumOfSalaries() {
-        double sumOfSalary = 0;
-        for (int i = 0; i < employeeRepository.getEmployeeList().size(); i++) {
-            sumOfSalary += employeeRepository.getEmployeeList().get(i).getSalary();
-        }
-        return sumOfSalary;
-    }
-
-    @Override
-    public Employee getMinimumWageEmployee() {
-        Employee minWageEmployee = employeeRepository.getEmployeeList().stream().min(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
-        return minWageEmployee;
-    }
-
-    @Override
-    public Employee getMaxWageEmployee() {
-        Employee maxWageEmployee = employeeRepository.getEmployeeList().stream().max(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
-        return maxWageEmployee;
-
-    }
-
-    @Override
-    public List<Employee> getAllEmployeesWithHighSalary() {
-        double averageSalary = (getSumOfSalaries() / employeeRepository.getEmployeeList().size());
-        List<Employee> allEmployeesWithHighSalary = employeeRepository.getEmployeeList().stream().filter(e -> e.getSalary() > averageSalary).toList();
-        return allEmployeesWithHighSalary;
+    private final EmployeeRepository employeeRepository;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
 
-    @Override
     public void addEmployee(Employee employee) {
-        employeeRepository.addEmployee(employee);
+        employeeRepository.save(employee);
     }
 
     @Override
-    public void editEmployee(int id, Employee employee) throws IllegalArgumentException {
-        employeeRepository.editEmployee(id, employee);
+    public void editEmployeeById(int id, EmployeeDTO employeeDTO) throws IncorrectEmployeeIdException {
+        if (employeeRepository.existsById(id)) {
+            Employee employee = employeeRepository.save(employeeDTO.toEmployee());
+        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
     }
 
     @Override
-    public Employee getEmployee(int id) throws IllegalArgumentException {
-        return employeeRepository.getEmployee(id);
+    public EmployeeDTO getEmployeeById(int id) throws IncorrectEmployeeIdException {
+
+        Optional<EmployeeDTO> employeeOptional = employeeRepository.findById(id).map(EmployeeDTO::fromEmployee);
+
+        return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
 
     @Override
-    public void deleteEmployee(int id) throws IllegalArgumentException {
-        employeeRepository.deleteEmployee(id);
+    public void deleteEmployeeById(int id) throws IncorrectEmployeeIdException {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
     }
-
 
     @Override
-    public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary) {
-        List<Employee> allEmployeesWithSalaryHigherThan = employeeRepository.getEmployees().values().stream().
-                filter(e -> e.getSalary() > compareSalary).toList();
-        return allEmployeesWithSalaryHigherThan;
+    public List<EmployeeDTO> getAllEmployees() {
+        List<Employee> employeeList = new ArrayList<>();
+        employeeRepository.findAll().forEach((employeeList::add));
+        return employeeList.stream().map(EmployeeDTO::fromEmployee).collect(Collectors.toList());
     }
+
 }
 
