@@ -10,7 +10,7 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     @Column (name = "name")
     private String name;
@@ -18,7 +18,7 @@ public class Employee {
     @Column (name = "salary")
     private int salary;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "position_id")
     private Position position;
 

@@ -24,9 +24,8 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer>, P
     @Query("SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.projections." +
             "EmployeeByIdFullInfo(e.name , e.salary , p.name) " +
             "FROM Employee e join fetch Position p " +
-            "WHERE e.position = p AND p.id=?1")
-    EmployeeByIdFullInfo findEmployeeWithFullInfo(int id);
-
+            "WHERE e.position = p AND e.id=?1")
+    Employee getEmployeeByIdFullInfo(@Param("id") int id);
 
 
 }

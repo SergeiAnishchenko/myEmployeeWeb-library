@@ -24,7 +24,7 @@ public interface EmployeeService {
 
     List<EmployeeDTO> getAllEmployeesByPosition(String position);
 
-    EmployeeByIdFullInfo getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException;
+    EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException;
 
     List<EmployeeDTO> getEmployeesByPage(int pageIndex);
 

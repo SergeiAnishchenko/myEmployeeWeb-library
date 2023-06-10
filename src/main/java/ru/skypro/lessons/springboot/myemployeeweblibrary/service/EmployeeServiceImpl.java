@@ -81,27 +81,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public EmployeeByIdFullInfo getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
+    public EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
         if (employeeRepository.existsById(id)) {
-            return employeeRepository.findEmployeeWithFullInfo(id);
+            return EmployeeDTO.fromEmployee(employeeRepository.getEmployeeByIdFullInfo(id));
+
         } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
     }
 
-
-//    public List<Employee> getEmployeeWithPaging(int pageIndex, int unitPerPage) {
-//        Pageable employeeOfConcretePage = PageRequest.of(pageIndex, unitPerPage);
-//        Page<Employee> page = employeeRepository.findAll(employeeOfConcretePage);
-//
-//        return page.stream()
-//                .toList();
-//    }
 
     public List<EmployeeDTO> getEmployeesByPage(int page) {
         Pageable employeeOfConcretePage = PageRequest.of(page, 10);
         Page<Employee> employeePage = employeeRepository.findAll(employeeOfConcretePage);
         List<Employee> employeeList = employeePage.stream().toList();
         return employeeList.stream().map(EmployeeDTO::fromEmployee).collect(Collectors.toList());
-
     }
 
 }

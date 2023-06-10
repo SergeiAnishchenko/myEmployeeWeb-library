@@ -67,23 +67,20 @@ public class EmployeeController {
     @GetMapping("/WithHighestSalary")
     public List<EmployeeDTO> getEmployeesWithHighestSalary() {
 
-        return employeeService.getEmployeesWithHighestSalary();
-    }
+        return employeeService.getEmployeesWithHighestSalary();}
 
 
     @GetMapping("/position")
     public Object getAllEmployeesByPosition(@RequestParam("position") String position) {
-        try {
-            return employeeService.getAllEmployeesByPosition(position);
+        try {return employeeService.getAllEmployeesByPosition(position);
         } catch (Throwable t) {
             return new ResponseEntity<>("Некорректный ввод должности.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/{id}/fullInfo")
-    public EmployeeByIdFullInfo getEmployeeByIdFullInfo(@PathVariable Integer id) throws IncorrectEmployeeIdException {
-        return employeeService.getEmployeeByIdFullInfo(id);
-    }
+    public EmployeeDTO getEmployeeByIdFullInfo(@PathVariable Integer id) throws IncorrectEmployeeIdException {
+        return employeeService.getEmployeeByIdFullInfo(id);}
 
     @GetMapping("/page")
     public List<EmployeeDTO> getEmployeeWithPaging(@RequestParam("page") int page) {
