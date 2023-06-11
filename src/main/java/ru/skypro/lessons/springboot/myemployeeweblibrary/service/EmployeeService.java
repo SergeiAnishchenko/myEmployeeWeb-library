@@ -22,7 +22,7 @@ public interface EmployeeService {
 
     List<EmployeeDTO> getEmployeesWithHighestSalary();
 
-    List<EmployeeDTO> getAllEmployeesByPosition(String position);
+    List<EmployeeDTO> getAllEmployeesByPosition(String positionName);
 
     EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException;
 

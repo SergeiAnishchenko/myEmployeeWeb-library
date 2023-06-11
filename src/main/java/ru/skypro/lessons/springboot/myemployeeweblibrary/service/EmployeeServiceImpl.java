@@ -3,12 +3,10 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepository;
 
 import java.util.*;
@@ -18,11 +16,9 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final PagingAndSortingRepository pagingAndSortingRepository;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, PagingAndSortingRepository pagingAndSortingRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
-        this.pagingAndSortingRepository = pagingAndSortingRepository;
     }
 
 
@@ -65,15 +61,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public List<EmployeeDTO> getEmployeesWithHighestSalary() {
         List<Employee> employeeList = employeeRepository.findEmployeesWithHighestSalary();
-        return employeeList.
-                stream().map(EmployeeDTO::fromEmployee)
+        return employeeList
+                .stream().map(EmployeeDTO::fromEmployee)
                 .collect(Collectors.toList());
     }
 
 
     public List<EmployeeDTO> getAllEmployeesByPosition(String positionName) {
-        if (positionName != null) {
-            return employeeRepository.getAllEmployeesByPosition(positionName).stream()
+        String correctPositionName;
+        if (getAllEmployees().stream().map(EmployeeDTO::toEmployee)
+                .anyMatch(employee -> employee.getPosition().getName()
+                        .equalsIgnoreCase(positionName))) {
+            if (getAllEmployees().stream().map(EmployeeDTO::toEmployee)
+                    .anyMatch(employee -> employee.getPosition().getName()
+                            .equals(positionName))) {
+                return employeeRepository.getAllEmployeesByPosition(positionName).stream()
+                        .map(EmployeeDTO::fromEmployee)
+                        .collect(Collectors.toList());
+            } else correctPositionName = positionName.substring(0, 1).toUpperCase() + positionName.substring(1);
+            return employeeRepository.getAllEmployeesByPosition(correctPositionName).stream()
                     .map(EmployeeDTO::fromEmployee)
                     .collect(Collectors.toList());
         } else return getAllEmployees();
@@ -82,10 +88,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
-        if (employeeRepository.existsById(id)) {
-            return EmployeeDTO.fromEmployee(employeeRepository.getEmployeeByIdFullInfo(id));
-
-        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
+            Optional<EmployeeDTO> employeeOptional = employeeRepository.getEmployeeByIdFullInfo(id).map(EmployeeDTO::fromEmployee);
+            return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
 
 
