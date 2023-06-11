@@ -1,15 +1,32 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.repository;
 
-
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 
-public interface EmployeeRepository {
+import java.util.List;
 
-    void addEmployee(Employee employee);
 
-    void editEmployee(int id, Employee employee) throws IllegalArgumentException;
+public interface EmployeeRepository extends CrudRepository<Employee, Integer>, PagingAndSortingRepository<Employee, Integer> {
 
-    Employee getEmployee(int id) throws IllegalArgumentException;
+    @Query(value = "FROM Employee e WHERE e.salary = (SELECT MAX(e2.salary) FROM Employee e2)")
+    List<Employee> findEmployeesWithHighestSalary();
 
-    void deleteEmployee(int id) throws IllegalArgumentException;
+    @Query("SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.projections." +
+            "EmployeeByIdFullInfo(e.name , e.salary , p.name) " +
+            "FROM Employee e join fetch Position p " +
+            "WHERE e.position = p AND p.name=?1")
+    List<Employee> getAllEmployeesByPosition(@Param("name") String positionName);
+
+    @Query("SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.projections." +
+            "EmployeeByIdFullInfo(e.name , e.salary , p.name) " +
+            "FROM Employee e join fetch Position p " +
+            "WHERE e.position = p AND e.id=?1")
+    Employee getEmployeeByIdFullInfo(@Param("id") int id);
+
+
 }
+

@@ -1,73 +1,99 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepository;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepositoryImpl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRepositoryImpl employeeRepository = new EmployeeRepositoryImpl();
+    private final EmployeeRepository employeeRepository;
+    private final PagingAndSortingRepository pagingAndSortingRepository;
 
-    @Override
-    public double getSumOfSalaries() {
-        double sumOfSalary = 0;
-        for (int i = 0; i < employeeRepository.getEmployeeList().size(); i++) {
-            sumOfSalary += employeeRepository.getEmployeeList().get(i).getSalary();
-        }
-        return sumOfSalary;
-    }
-
-    @Override
-    public Employee getMinimumWageEmployee() {
-        Employee minWageEmployee = employeeRepository.getEmployeeList().stream().min(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
-        return minWageEmployee;
-    }
-
-    @Override
-    public Employee getMaxWageEmployee() {
-        Employee maxWageEmployee = employeeRepository.getEmployeeList().stream().max(Comparator.comparingDouble(Employee::getSalary)).orElse(null);
-        return maxWageEmployee;
-
-    }
-
-    @Override
-    public List<Employee> getAllEmployeesWithHighSalary() {
-        double averageSalary = (getSumOfSalaries() / employeeRepository.getEmployeeList().size());
-        List<Employee> allEmployeesWithHighSalary = employeeRepository.getEmployeeList().stream().filter(e -> e.getSalary() > averageSalary).toList();
-        return allEmployeesWithHighSalary;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, PagingAndSortingRepository pagingAndSortingRepository) {
+        this.employeeRepository = employeeRepository;
+        this.pagingAndSortingRepository = pagingAndSortingRepository;
     }
 
 
-    @Override
     public void addEmployee(Employee employee) {
-        employeeRepository.addEmployee(employee);
+        employeeRepository.save(employee);
     }
 
     @Override
-    public void editEmployee(int id, Employee employee) throws IllegalArgumentException {
-        employeeRepository.editEmployee(id, employee);
+    public void editEmployeeById(int id, EmployeeDTO employeeDTO) throws IncorrectEmployeeIdException {
+        if (employeeRepository.existsById(id)) {
+            Employee employee = employeeDTO.toEmployee();
+            employee.setId(id);
+            employeeRepository.save(employee);
+        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
     }
 
     @Override
-    public Employee getEmployee(int id) throws IllegalArgumentException {
-        return employeeRepository.getEmployee(id);
+    public EmployeeDTO getEmployeeById(int id) throws IncorrectEmployeeIdException {
+
+        Optional<EmployeeDTO> employeeOptional = employeeRepository.findById(id).map(EmployeeDTO::fromEmployee);
+
+        return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
 
     @Override
-    public void deleteEmployee(int id) throws IllegalArgumentException {
-        employeeRepository.deleteEmployee(id);
+    public void deleteEmployeeById(int id) throws IncorrectEmployeeIdException {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
+    }
+
+    @Override
+    public List<EmployeeDTO> getAllEmployees() {
+        List<Employee> employeeList = new ArrayList<>();
+        employeeRepository.findAll().forEach((employeeList::add));
+        return employeeList.
+                stream().map(EmployeeDTO::fromEmployee)
+                .collect(Collectors.toList());
+    }
+
+    public List<EmployeeDTO> getEmployeesWithHighestSalary() {
+        List<Employee> employeeList = employeeRepository.findEmployeesWithHighestSalary();
+        return employeeList.
+                stream().map(EmployeeDTO::fromEmployee)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<EmployeeDTO> getAllEmployeesByPosition(String positionName) {
+        if (positionName != null) {
+            return employeeRepository.getAllEmployeesByPosition(positionName).stream()
+                    .map(EmployeeDTO::fromEmployee)
+                    .collect(Collectors.toList());
+        } else return getAllEmployees();
     }
 
 
     @Override
-    public List<Employee> getAllEmployeesWithSalaryHigherThan(int compareSalary) {
-        List<Employee> allEmployeesWithSalaryHigherThan = employeeRepository.getEmployees().values().stream().
-                filter(e -> e.getSalary() > compareSalary).toList();
-        return allEmployeesWithSalaryHigherThan;
+    public EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
+        if (employeeRepository.existsById(id)) {
+            return EmployeeDTO.fromEmployee(employeeRepository.getEmployeeByIdFullInfo(id));
+
+        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
     }
+
+
+    public List<EmployeeDTO> getEmployeesByPage(int page) {
+        Pageable employeeOfConcretePage = PageRequest.of(page, 10);
+        Page<Employee> employeePage = employeeRepository.findAll(employeeOfConcretePage);
+        List<Employee> employeeList = employeePage.stream().toList();
+        return employeeList.stream().map(EmployeeDTO::fromEmployee).collect(Collectors.toList());
+    }
+
 }
-
