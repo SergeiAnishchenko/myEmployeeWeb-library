@@ -3,10 +3,12 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+@RestControllerAdvice
 public class EmployeeExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<?> handleIOException(IOException ioException) {
@@ -25,9 +27,5 @@ public class EmployeeExceptionHandler {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<?> handleIDException() {
-        String str = "Некорректный ID сотрудника.";
-        return new ResponseEntity<>(str,HttpStatus.NOT_FOUND);
-    }
+
 }

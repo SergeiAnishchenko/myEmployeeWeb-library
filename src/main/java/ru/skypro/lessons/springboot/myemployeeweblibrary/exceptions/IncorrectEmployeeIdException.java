@@ -18,4 +18,8 @@ public class IncorrectEmployeeIdException extends Exception{
     public IncorrectEmployeeIdException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
+    public IncorrectEmployeeIdException() {
+
+    }
 }

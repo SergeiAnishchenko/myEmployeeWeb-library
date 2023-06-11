@@ -8,6 +8,7 @@ import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface EmployeeRepository extends CrudRepository<Employee, Integer>, PagingAndSortingRepository<Employee, Integer> {
@@ -15,17 +16,16 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer>, P
     @Query(value = "FROM Employee e WHERE e.salary = (SELECT MAX(e2.salary) FROM Employee e2)")
     List<Employee> findEmployeesWithHighestSalary();
 
-    @Query("SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.projections." +
-            "EmployeeByIdFullInfo(e.name , e.salary , p.name) " +
-            "FROM Employee e join fetch Position p " +
-            "WHERE e.position = p AND p.name=?1")
+    @Query(value = "FROM Employee e "+
+            "INNER JOIN Position p " +
+            "ON e.position.id = p.id and p.name = :name")
     List<Employee> getAllEmployeesByPosition(@Param("name") String positionName);
 
     @Query("SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.projections." +
             "EmployeeByIdFullInfo(e.name , e.salary , p.name) " +
             "FROM Employee e join fetch Position p " +
             "WHERE e.position = p AND e.id=?1")
-    Employee getEmployeeByIdFullInfo(@Param("id") int id);
+    Optional<Employee> getEmployeeByIdFullInfo(int id);
 
 
 }

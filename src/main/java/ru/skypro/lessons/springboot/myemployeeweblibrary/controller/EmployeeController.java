@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.service.EmployeeService;
 
 import java.util.List;
@@ -48,7 +47,7 @@ public class EmployeeController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEmployeeById(@PathVariable int id) {
+    public Object deleteEmployeeById(@PathVariable int id) {
         try {
             employeeService.deleteEmployeeById(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -71,19 +70,26 @@ public class EmployeeController {
 
 
     @GetMapping("/position")
-    public Object getAllEmployeesByPosition(@RequestParam("position") String position) {
-        try {return employeeService.getAllEmployeesByPosition(position);
+    public Object getAllEmployeesByPosition(@RequestParam("position") String positionName) {
+        try {return employeeService.getAllEmployeesByPosition(positionName);
         } catch (Throwable t) {
             return new ResponseEntity<>("Некорректный ввод должности.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/{id}/fullInfo")
-    public EmployeeDTO getEmployeeByIdFullInfo(@PathVariable Integer id) throws IncorrectEmployeeIdException {
-        return employeeService.getEmployeeByIdFullInfo(id);}
+    public Object getEmployeeByIdFullInfo(@PathVariable Integer id) {
+        try {
+        return employeeService.getEmployeeByIdFullInfo(id);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ID сотрудника.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @GetMapping("/page")
     public List<EmployeeDTO> getEmployeeWithPaging(@RequestParam("page") int page) {
         return employeeService.getEmployeesByPage(page);
     }
+
 }
