@@ -1,7 +1,6 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.pojo;
 
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
@@ -18,15 +17,19 @@ public class Employee {
     @Column (name = "salary")
     private int salary;
 
+    @Column (name = "departmentNumber")
+    private int departmentNumber;
+
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "position_id")
     private Position position;
 
 
-    public Employee(Integer id, String name, int salary, Position position) {
+    public Employee(Integer id, String name, int salary, int departmentNumber, Position position) {
         this.id = id;
         this.name = name;
         this.salary = salary;
+        this.departmentNumber = departmentNumber;
         this.position = position;
     }
 
@@ -60,6 +63,14 @@ public class Employee {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public int getDepartmentNumber() {
+        return departmentNumber;
+    }
+
+    public void setDepartmentNumber(int departmentNumber) {
+        this.departmentNumber = departmentNumber;
     }
 
     @Override

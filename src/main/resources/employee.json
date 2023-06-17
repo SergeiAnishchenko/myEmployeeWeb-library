@@ -1,0 +1,43 @@
+[
+  {
+    "id": 30,
+    "name": "Алексей",
+    "salary": 150000,
+    "departmentNumber": 1,
+    "position": {
+      "id": 3,
+      "name": "Разработчик"
+    }
+  },
+  {
+    "id": 31,
+    "name": "Ольга",
+    "salary": 170000,
+    "departmentNumber": 1,
+    "position": {
+      "id": 4,
+      "name": "Тестировщик"
+    }
+  },
+  {
+    "id": 32,
+    "name": "Екатерина",
+    "salary": 100000,
+    "departmentNumber": 2,
+    "position": {
+      "id": 5,
+      "name": "Менеджер"
+    }
+  },
+  {
+    "id": 33,
+    "name": "Олег",
+    "salary": 110000,
+    "departmentNumber": 2,
+    "position": {
+      "id": 5,
+      "name": "Менеджер"
+    }
+  }
+]
+

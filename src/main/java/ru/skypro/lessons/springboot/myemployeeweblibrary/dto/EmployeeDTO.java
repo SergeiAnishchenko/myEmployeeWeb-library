@@ -2,11 +2,13 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.dto;
 
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Position;
+import java.io.Serializable;
 
-public class EmployeeDTO {
+public class EmployeeDTO implements Serializable {
     private Integer id;
     private String name;
     private int salary;
+    private int departmentNumber;
     private Position position;
 
     public static EmployeeDTO fromEmployee(Employee employee) {
@@ -14,6 +16,7 @@ public class EmployeeDTO {
         employeeDTO.setId(employee.getId());
         employeeDTO.setName(employee.getName());
         employeeDTO.setSalary(employee.getSalary());
+        employeeDTO.setDepartmentNumber(employee.getDepartmentNumber());
         employeeDTO.setPosition(employee.getPosition());
         return employeeDTO;
     }
@@ -23,7 +26,9 @@ public class EmployeeDTO {
         employee.setId(this.getId());
         employee.setName(this.getName());
         employee.setSalary(this.getSalary());
+        employee.setDepartmentNumber(this.getDepartmentNumber());
         employee.setPosition(this.getPosition());
+
         return employee;
     }
 
@@ -56,6 +61,23 @@ public class EmployeeDTO {
     }
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public int getDepartmentNumber() {
+        return departmentNumber;
+    }
+    public void setDepartmentNumber(int departmentNumber) {
+        this.departmentNumber = departmentNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", salary=" + salary +
+                ", position=" + position +
+                '}';
     }
 }
 

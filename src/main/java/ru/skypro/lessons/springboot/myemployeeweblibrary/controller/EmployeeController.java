@@ -2,14 +2,16 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.DepartmentReport;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
-import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.service.EmployeeService;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.*;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/employee")
@@ -20,8 +22,8 @@ public class EmployeeController {
 
 
     @PostMapping("/")
-    public void addEmployee(@RequestBody Employee employee) {
-        employeeService.addEmployee(employee);
+    public void addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.addEmployee(employeeDTO);
     }
 
 
@@ -66,12 +68,14 @@ public class EmployeeController {
     @GetMapping("/WithHighestSalary")
     public List<EmployeeDTO> getEmployeesWithHighestSalary() {
 
-        return employeeService.getEmployeesWithHighestSalary();}
+        return employeeService.getEmployeesWithHighestSalary();
+    }
 
 
     @GetMapping("/position")
     public Object getAllEmployeesByPosition(@RequestParam("position") String positionName) {
-        try {return employeeService.getAllEmployeesByPosition(positionName);
+        try {
+            return employeeService.getAllEmployeesByPosition(positionName);
         } catch (Throwable t) {
             return new ResponseEntity<>("Некорректный ввод должности.", HttpStatus.BAD_REQUEST);
         }
@@ -80,7 +84,7 @@ public class EmployeeController {
     @GetMapping("/{id}/fullInfo")
     public Object getEmployeeByIdFullInfo(@PathVariable Integer id) {
         try {
-        return employeeService.getEmployeeByIdFullInfo(id);
+            return employeeService.getEmployeeByIdFullInfo(id);
         } catch (Throwable t) {
             return new ResponseEntity<>("Некорректный ID сотрудника.", HttpStatus.BAD_REQUEST);
         }
@@ -92,4 +96,25 @@ public class EmployeeController {
         return employeeService.getEmployeesByPage(page);
     }
 
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadNewEmployeesFromFile(@RequestParam("file") MultipartFile file) throws IOException {
+
+        try {
+            employeeService.uploadNewEmployeesFromFile(file);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/departmentReport")
+    public List<DepartmentReport> getAndUploadDepartmentReport() throws IOException {
+        return employeeService.getDepartmentReport();
+    }
+
 }
+
+
+
+
