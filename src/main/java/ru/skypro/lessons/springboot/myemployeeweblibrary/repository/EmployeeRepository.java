@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.DepartmentReport;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.projections.EmployeeByIdFullInfo;
 
@@ -27,6 +28,11 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer>, P
             "WHERE e.position = p AND e.id=?1")
     Optional<Employee> getEmployeeByIdFullInfo(int id);
 
+
+    @Query(value = "SELECT new ru.skypro.lessons.springboot.myemployeeweblibrary.dto.DepartmentReport" +
+            "( " + "p.name, " + "count(e.id), " + "min(e.salary), " + "max(e.salary), " + "avg(e.salary)) "
+            + "from Employee e join fetch Position p " + "where e.position = p " + "group by p.id")
+    List<DepartmentReport> getReport();
 
 }
 

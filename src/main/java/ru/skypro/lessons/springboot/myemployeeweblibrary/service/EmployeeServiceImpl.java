@@ -1,14 +1,22 @@
 package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.DepartmentReport;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.dto.EmployeeDTO;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.exceptions.IncorrectEmployeeIdException;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.pojo.Employee;
 import ru.skypro.lessons.springboot.myemployeeweblibrary.repository.EmployeeRepository;
-
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,8 +30,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-    public void addEmployee(Employee employee) {
-        employeeRepository.save(employee);
+    public void addEmployee(EmployeeDTO employeeDTO) {
+        employeeRepository.save(employeeDTO.toEmployee());
     }
 
     @Override
@@ -88,8 +96,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
-            Optional<EmployeeDTO> employeeOptional = employeeRepository.getEmployeeByIdFullInfo(id).map(EmployeeDTO::fromEmployee);
-            return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
+        Optional<EmployeeDTO> employeeOptional = employeeRepository.getEmployeeByIdFullInfo(id).map(EmployeeDTO::fromEmployee);
+        return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
 
 
@@ -100,4 +108,40 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeList.stream().map(EmployeeDTO::fromEmployee).collect(Collectors.toList());
     }
 
+    @Override
+    public void uploadNewEmployeesFromFile(MultipartFile file) throws IOException {
+
+        try (InputStream inputStream = file.getInputStream()) {
+
+            int streamSize = inputStream.available();
+            byte[] bytes = new byte[streamSize];
+            inputStream.read(bytes);
+            String json = new String(bytes, StandardCharsets.UTF_8);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+            EmployeeDTO[] employeeDTOArray = objectMapper.readValue(json, EmployeeDTO[].class);
+
+            for (EmployeeDTO employeeDTO1 : employeeDTOArray) {
+                employeeRepository.save(employeeDTO1.toEmployee());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public List<DepartmentReport> getDepartmentReport() throws IOException {
+        List<DepartmentReport> departmentReportList = new ArrayList<>(employeeRepository.getReport());
+
+        String list = departmentReportList.toString();
+        String fileName = "C:\\Users\\79313\\IdeaProjects\\myEmployeeWeb-library\\src\\main\\resources\\report.json";
+        Path path = Paths.get(fileName);
+        try {
+            Files.write(path, list.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return departmentReportList;
+    }
 }
