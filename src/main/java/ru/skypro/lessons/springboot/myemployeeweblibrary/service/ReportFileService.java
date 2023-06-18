@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface ReportFileService {
 
-    void uploadNewReportFile (MultipartFile file) throws IOException;
+    String uploadNewReportFile (MultipartFile file) throws IOException;
 
     ReportFileDTO getReportFileById(int id) throws IllegalArgumentException;
 

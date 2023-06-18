@@ -22,13 +22,12 @@ public class ReportPathController {
     private final ReportPathService reportPathService;
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadNewReportPath(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadNewReportPath(@RequestParam("file") MultipartFile file) throws IOException {
 
         try {
-            reportPathService.uploadNewReportPath(file);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return reportPathService.uploadNewReportPath(file);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return String.valueOf(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
         }
     }
 

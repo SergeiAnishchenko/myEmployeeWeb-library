@@ -13,7 +13,6 @@ import ru.skypro.lessons.springboot.myemployeeweblibrary.service.ReportFileServi
 import java.io.IOException;
 
 
-
 @RestController
 @RequestMapping("/reportFile")
 @RequiredArgsConstructor
@@ -23,13 +22,12 @@ public class ReportFileController {
 
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadNewReportFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadNewReportFile(@RequestParam("file") MultipartFile file) throws IOException {
 
         try {
-            reportFileService.uploadNewReportFile(file);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return reportFileService.uploadNewReportFile(file);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return String.valueOf(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
         }
     }
 
