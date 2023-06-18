@@ -35,7 +35,7 @@ public class ReportPathServiceImpl implements ReportPathService {
             inputStream.read(bytes);
             String json = new String(bytes, StandardCharsets.UTF_8);
 
-            String fileName = "dataFile.json";
+            String fileName = "dataFile.json" + Math.random();
             Path path = Paths.get(fileName);
             try {
                 Files.write(path, json.getBytes(StandardCharsets.UTF_8));
