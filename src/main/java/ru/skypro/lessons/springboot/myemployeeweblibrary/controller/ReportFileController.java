@@ -32,15 +32,19 @@ public class ReportFileController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> getReportById(@PathVariable Integer id) {
+    public Object getReportById(@PathVariable Integer id) {
 
         String fileName = "report.json";
-        Resource resource = new ByteArrayResource(reportFileService.getReportFileById(id).getFile());
+
+        try {Resource resource = new ByteArrayResource(reportFileService.getReportFileById(id).getFile());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(resource);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Некорректный ID записи в базе данных.", HttpStatus.BAD_REQUEST);
+        }
     }
 
 
