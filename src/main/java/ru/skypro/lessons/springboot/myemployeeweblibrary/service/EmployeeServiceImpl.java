@@ -2,6 +2,8 @@ package ru.skypro.lessons.springboot.myemployeeweblibrary.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
     private final EmployeeRepository employeeRepository;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -32,6 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public void addEmployee(EmployeeDTO employeeDTO) {
         employeeRepository.save(employeeDTO.toEmployee());
+        logger.info("Was invoked method for create employee " + employeeDTO.toEmployee().toString());
     }
 
     @Override
@@ -40,13 +44,16 @@ public class EmployeeServiceImpl implements EmployeeService {
             Employee employee = employeeDTO.toEmployee();
             employee.setId(id);
             employeeRepository.save(employee);
-        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
+            logger.info("Was invoked method for edit employee " + employee.toString());
+        } else {logger.error("There is no employee with id = " + id, new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
+        throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");}
     }
 
     @Override
     public EmployeeDTO getEmployeeById(int id) throws IncorrectEmployeeIdException {
 
         Optional<EmployeeDTO> employeeOptional = employeeRepository.findById(id).map(EmployeeDTO::fromEmployee);
+        logger.info("Was invoked method getEmployeeById");
 
         return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
@@ -55,13 +62,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployeeById(int id) throws IncorrectEmployeeIdException {
         if (employeeRepository.existsById(id)) {
             employeeRepository.deleteById(id);
-        } else throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");
+            logger.info("Was invoked method for delete employee with ID " + id);
+        } else {logger.error("There is no employee with id = " + id, new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
+            throw new IncorrectEmployeeIdException("Некорректный ID сотрудника.");}
     }
 
     @Override
     public List<EmployeeDTO> getAllEmployees() {
         List<Employee> employeeList = new ArrayList<>();
         employeeRepository.findAll().forEach((employeeList::add));
+        logger.info("Was invoked method getAllEmployees");
         return employeeList.
                 stream().map(EmployeeDTO::fromEmployee)
                 .collect(Collectors.toList());
@@ -69,6 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public List<EmployeeDTO> getEmployeesWithHighestSalary() {
         List<Employee> employeeList = employeeRepository.findEmployeesWithHighestSalary();
+        logger.info("Was invoked method getEmployeesWithHighestSalary");
         return employeeList
                 .stream().map(EmployeeDTO::fromEmployee)
                 .collect(Collectors.toList());
@@ -77,6 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public List<EmployeeDTO> getAllEmployeesByPosition(String positionName) {
         String correctPositionName;
+        logger.info("Was invoked method getAllEmployeesByPosition");
         if (getAllEmployees().stream().map(EmployeeDTO::toEmployee)
                 .anyMatch(employee -> employee.getPosition().getName()
                         .equalsIgnoreCase(positionName))) {
@@ -97,6 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO getEmployeeByIdFullInfo(int id) throws IncorrectEmployeeIdException {
         Optional<EmployeeDTO> employeeOptional = employeeRepository.getEmployeeByIdFullInfo(id).map(EmployeeDTO::fromEmployee);
+        logger.info("Was invoked method getEmployeeByIdFullInfo");
         return employeeOptional.orElseThrow(() -> new IncorrectEmployeeIdException("Некорректный ID сотрудника."));
     }
 
@@ -105,6 +118,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Pageable employeeOfConcretePage = PageRequest.of(page, 10);
         Page<Employee> employeePage = employeeRepository.findAll(employeeOfConcretePage);
         List<Employee> employeeList = employeePage.stream().toList();
+        logger.info("Was invoked method getEmployeesByPage");
         return employeeList.stream().map(EmployeeDTO::fromEmployee).collect(Collectors.toList());
     }
 
@@ -124,8 +138,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             for (EmployeeDTO employeeDTO1 : employeeDTOArray) {
                 employeeRepository.save(employeeDTO1.toEmployee());
             }
+            logger.info("Was invoked method uploadNewEmployeesFromFile");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to read file" + file, e);
         }
 
     }
@@ -139,8 +154,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Path path = Paths.get(fileName);
         try {
             Files.write(path, list.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+            logger.info("Was invoked method getDepartmentReport");
+        }  catch (IOException e) {
+            logger.error("Failed to get DepartmentReport", e);
         }
         return departmentReportList;
     }
