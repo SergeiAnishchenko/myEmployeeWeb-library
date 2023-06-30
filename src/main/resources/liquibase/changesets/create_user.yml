@@ -23,6 +23,38 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: SergeyAnishchenko
+      changes:
+        - dropTable:
+            tableName: users
+
+
+  - changeSet:
+      id: user1
+      author: SergeyAnishchenko
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(50)
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: int
+                  constraints:
+                    nullable: false
 
 
 

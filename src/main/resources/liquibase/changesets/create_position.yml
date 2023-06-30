@@ -19,4 +19,32 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
+  - changeSet:
+      id: 2
+      author: SergeyAnishchenko
+      changes:
+        - dropTable:
+            tableName: position
+
+  - changeSet:
+      id: position1
+      author: SergeyAnishchenko
+      changes:
+        - createTable:
+            tableName: position
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+
 
