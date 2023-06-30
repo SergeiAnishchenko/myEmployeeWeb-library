@@ -36,4 +36,25 @@ databaseChangeLog:
                     referencedTableName: position
                     referencedColumnName: id
 
+  -  changeSet:
+       id:  2
+       author:  SergeyAnishchenko
+       changes:
+         -  dropColumn:
+              tableName:  employee
+              columns:
+                -  column:
+                     name:  departmentNumber
+                     type:  int
+                     
+  - changeSet:
+      id: 3
+      author: SergeyAnishchenko
+      changes:
+        - addColumn:
+            tableName: employee
+            columns:
+              - column:
+                  name: department_number
+                  type: int
 
