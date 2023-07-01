@@ -1,32 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
-      author: SergeyAnishchenko
-      changes:
-        - createTable:
-            tableName: authorities
-            columns:
-              - column:
-                  name: authority
-                  type: varchar(50)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: username
-                  type: varchar(50)
-                  constraints:
-                    foreignKeyName: username
-                    referencedTableName: users
-                    referencedColumnName: username
-
-  - changeSet:
-      id: 2
-      author: SergeyAnishchenko
-      changes:
-        - dropTable:
-            tableName: authorities
-
-  - changeSet:
       id: authority1
       author: SergeyAnishchenko
       changes:
@@ -35,15 +8,17 @@ databaseChangeLog:
             columns:
               - column:
                   name: authority
-                  type: varchar(50)
+                  type: varchar(1000)
                   constraints:
                     nullable: false
               - column:
-                  name: username
+                  name: user_name
                   type: varchar(50)
                   constraints:
-                    foreignKeyName: username
+                    foreignKeyName: user_name
                     referencedTableName: users
-                    referencedColumnName: username
+                    referencedColumnName: user_name
+
+
 
 

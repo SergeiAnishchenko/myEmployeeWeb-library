@@ -1,69 +1,4 @@
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: SergeyAnishchenko
-      changes:
-        - createTable:
-            tableName: employee
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: varchar(50)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: salary
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: departmentNumber
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: position_id
-                  type: int
-                  constraints:
-                    foreignKeyName: position_id
-                    referencedTableName: position
-                    referencedColumnName: id
-
-  -  changeSet:
-       id:  2
-       author:  SergeyAnishchenko
-       changes:
-         -  dropColumn:
-              tableName:  employee
-              columns:
-                -  column:
-                     name:  departmentNumber
-                     type:  int
-                     
-  - changeSet:
-      id: 3
-      author: SergeyAnishchenko
-      changes:
-        - addColumn:
-            tableName: employee
-            columns:
-              - column:
-                  name: department_number
-                  type: int
-
-  - changeSet:
-      id: 4
-      author: SergeyAnishchenko
-      changes:
-        - dropTable:
-            tableName: employee
 
   - changeSet:
       id: employee1
@@ -81,7 +16,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(50)
+                  type: varchar(1000)
                   constraints:
                     nullable: false
               - column:

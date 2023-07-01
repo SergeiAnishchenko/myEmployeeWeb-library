@@ -16,7 +16,7 @@
 //
 //    @Id
 //    @ManyToOne (fetch = FetchType.EAGER)
-//    @JoinColumn(name = "username")
+//    @JoinColumn(name = "user_name")
 //    private User user;
 //
 //
