@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: authority1
+      author: SergeyAnishchenko
+      changes:
+        - createTable:
+            tableName: authorities
+            columns:
+              - column:
+                  name: authority
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_name
+                  type: varchar(50)
+                  constraints:
+                    foreignKeyName: user_name
+                    referencedTableName: users
+                    referencedColumnName: user_name
+
+
+
+

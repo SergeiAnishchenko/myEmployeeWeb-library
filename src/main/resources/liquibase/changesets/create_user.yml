@@ -1,0 +1,29 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: user1
+      author: SergeyAnishchenko
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(1000)
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: int
+                  constraints:
+                    nullable: false
+
+
+

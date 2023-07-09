@@ -76,6 +76,10 @@ public class EmployeeController {
         return employeeService.getDepartmentReport();
     }
 
+    @PostMapping("/")
+    public void addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.addEmployee(employeeDTO);
+    }
 }
 
 
